@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Servicio 1: El motor de base de datos relacional (PostgreSQL)
+  db:
+    image: postgres:15
+    container_name: smartgym_db
+    restart: always
+    environment:
+      # Estos valores deben coincidir con tu .env.example
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-smartgym_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Servicio 2: Tu API de SmartGym (Node.js + Express)
+  app:
+    build: .
+    container_name: smartgym_api
+    restart: always
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-smartgym_db}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
