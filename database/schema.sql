@@ -1,5 +1,5 @@
 -- ============================================================
---  BASE DE DATOS: smartgym
+--  BASE DE DATOS: SMARTGYM
 --  Motor: PostgreSQL
 -- ============================================================
 
@@ -8,13 +8,13 @@
 -- ============================================================
 
 CREATE TABLE Role (
-    id_rol      int          PRIMARY KEY,
+    id_rol      SERIAL          PRIMARY KEY,
     Nombre      VARCHAR(100)    NOT NULL,
     Descripcion TEXT
 );
 
 CREATE TABLE Usuario (
-    ID_user         int          PRIMARY KEY,
+    ID_user         SERIAL          PRIMARY KEY,
     password_hash   VARCHAR(255)    NOT NULL,
     email           VARCHAR(150)    NOT NULL UNIQUE,
     id_rol          INT             NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE Usuario (
 -- ============================================================
 
 CREATE TABLE Entrenadores (
-    ID_entrenador   int          PRIMARY KEY,
+    ID_entrenador   SERIAL          PRIMARY KEY,
     ID_user         INT             NOT NULL UNIQUE,
     Nombre          VARCHAR(100)    NOT NULL,
     Apellido        VARCHAR(100)    NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE Entrenadores (
 -- ============================================================
 
 CREATE TABLE Clientes (
-    ID_client   int          PRIMARY KEY,
+    ID_client   SERIAL          PRIMARY KEY,
     ID_user     INT             NOT NULL UNIQUE,
     Nombre      VARCHAR(100)    NOT NULL,
     Apellido    VARCHAR(100)    NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE Clientes (
 -- ============================================================
 
 CREATE TABLE EvaBiometricas (
-    ID_biometrica       int          PRIMARY KEY,
+    ID_biometrica       SERIAL          PRIMARY KEY,
     ID_client           INT             NOT NULL,
     ID_entrenador       INT             NOT NULL,
     Estatura            NUMERIC(5,2),
@@ -71,12 +71,12 @@ CREATE TABLE EvaBiometricas (
 -- ============================================================
 
 CREATE TABLE CategoriaMaquinas (
-    ID_categoria    int          PRIMARY KEY,
+    ID_categoria    SERIAL          PRIMARY KEY,
     Nombre          VARCHAR(100)    NOT NULL
 );
 
 CREATE TABLE Maquinas (
-    ID_maquina      int          PRIMARY KEY,
+    ID_maquina      SERIAL          PRIMARY KEY,
     ID_categoria    INT             NOT NULL,
     Nombre          VARCHAR(150)    NOT NULL,
     Descripcion     TEXT,
@@ -89,7 +89,7 @@ CREATE TABLE Maquinas (
 -- ============================================================
 
 CREATE TABLE TicketsMantenimiento (
-    ID_ticket           int          PRIMARY KEY,
+    ID_ticket           SERIAL          PRIMARY KEY,
     ID_maquina          INT             NOT NULL,
     Fecha_falla         DATE            NOT NULL,
     Descripcion         TEXT,
@@ -104,13 +104,13 @@ CREATE TABLE TicketsMantenimiento (
 -- ============================================================
 
 CREATE TABLE Disciplina (
-    ID_disciplina   int          PRIMARY KEY,
+    ID_disciplina   SERIAL          PRIMARY KEY,
     Nombre          VARCHAR(100)    NOT NULL,
     Descripcion     TEXT
 );
 
 CREATE TABLE Sesiones (
-    ID_sesion       int          PRIMARY KEY,
+    ID_sesion       SERIAL          PRIMARY KEY,
     ID_disciplina   INT             NOT NULL,
     ID_entrenador   INT             NOT NULL,
     Hora_inicio     TIME            NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE Sesiones (
 );
 
 CREATE TABLE Reservas (
-    ID_reserva  int  PRIMARY KEY,
+    ID_reserva  SERIAL  PRIMARY KEY,
     ID_Client   INT     NOT NULL,
     ID_sesion   INT     NOT NULL,
     Fecha       DATE    NOT NULL,
@@ -134,14 +134,14 @@ CREATE TABLE Reservas (
 -- ============================================================
 
 CREATE TABLE suscripcion (
-    ID_suscripcion  int          PRIMARY KEY,
+    ID_suscripcion  SERIAL          PRIMARY KEY,
     Nombre          VARCHAR(100)    NOT NULL,
     Costo           NUMERIC(10,2)   NOT NULL,
     Duracion        INT             NOT NULL  -- días
 );
 
 CREATE TABLE Membresias (
-    ID_mebresia     int          PRIMARY KEY,
+    ID_mebresia     SERIAL          PRIMARY KEY,
     ID_client       INT             NOT NULL,
     ID_suscripcion  INT             NOT NULL,
     Fecha_inicio    DATE            NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE Membresias (
 -- ============================================================
 
 CREATE TABLE Pagos (
-    ID_pago         int          PRIMARY KEY,
+    ID_pago         SERIAL          PRIMARY KEY,
     ID_membresia    INT             NOT NULL,
     Monto           NUMERIC(10,2)   NOT NULL,
     Fecha           DATE            NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE Pagos (
 -- ============================================================
 
 CREATE TABLE ControlBitacora (
-    ID_control      int          PRIMARY KEY,
+    ID_control      SERIAL          PRIMARY KEY,
     ID_client       INT             NOT NULL,
     Hora_entrada    TIME,
     Fecha           DATE            NOT NULL,
@@ -183,7 +183,7 @@ CREATE TABLE ControlBitacora (
 -- ============================================================
 
 CREATE TABLE ProductosTienda (
-    ID_producto     int          PRIMARY KEY,
+    ID_producto     SERIAL          PRIMARY KEY,
     Nombre          VARCHAR(150)    NOT NULL,
     Descripcion     TEXT,
     Precio          NUMERIC(10,2)   NOT NULL,
@@ -191,7 +191,7 @@ CREATE TABLE ProductosTienda (
 );
 
 CREATE TABLE VentasTienda (
-    ID_venta    int          PRIMARY KEY,
+    ID_venta    SERIAL          PRIMARY KEY,
     ID_client   INT             NOT NULL,
     Fecha       DATE            NOT NULL,
     Total       NUMERIC(10,2)   NOT NULL,
