@@ -9,9 +9,7 @@
 INSERT INTO Role (Nombre, Descripcion) VALUES
 ('Administrador', 'Acceso total al sistema'),
 ('Entrenador',    'Gestión de sesiones y clientes'),
-('Cliente',       'Acceso a reservas y membresías'),
-('Recepcionista', 'Control de acceso y ventas');
-
+('Cliente',       'Acceso a reservas y membresías');
 -- ============================================================
 -- 2. USUARIOS
 -- ============================================================
@@ -22,8 +20,7 @@ INSERT INTO Usuario (password_hash, email, id_rol, activo) VALUES
 ('$2b$10$hash_cliente_001',     'juan.perez@gmail.com',    3, TRUE),
 ('$2b$10$hash_cliente_002',     'maria.lopez@gmail.com',   3, TRUE),
 ('$2b$10$hash_cliente_003',     'pedro.gomez@gmail.com',   3, TRUE),
-('$2b$10$hash_cliente_004',     'ana.torres@gmail.com',    3, TRUE),
-('$2b$10$hash_recep_001',       'recep@gimnasio.com',      4, TRUE);
+('$2b$10$hash_cliente_004',     'ana.torres@gmail.com',    3, TRUE);
 
 -- ============================================================
 -- 3. ENTRENADORES
