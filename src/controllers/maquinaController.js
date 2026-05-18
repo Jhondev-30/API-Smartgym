@@ -1,33 +1,21 @@
-const { Pool } = require('pg');
-
-console.log('DB PARAMS:', {
-    connectionString: process.env.DATABASE_URL,
-    host: process.env.PGHOST,
-    port: process.env.PGPORT,
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE,
-    ssl: process.env.PGSSL
-});
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || undefined,
-    host: process.env.PGHOST || 'localhost',
-    port: parseInt(process.env.PGPORT || '5432', 10),
-    user: process.env.PGUSER || 'postgres',
-    password: process.env.PGPASSWORD || 'postgres',
-    database: process.env.PGDATABASE || 'smartgym_db',
-    ssl: process.env.PGSSL === 'true' ? { rejectUnauthorized: false } : false,
-});
+// Importamos el pool centralizado para garantizar la consistencia de los datos [1]
+const pool = require('../config/db');
 
 const getMaquinas = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM maquinas ORDER BY id_maquina');
-        console.log('Consulta exitosa, filas:', result.rows.length);
+        // Consulta SQL usando los nombres exactos definidos en el MER [7, 8]
+        const result = await pool.query('SELECT * FROM Maquinas ORDER BY ID_maquina');
+        
+        console.log('Consulta exitosa, máquinas encontradas:', result.rows.length);
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error en maquinaController.getMaquinas:', error);
-        res.status(500).json({ error: 'Error al obtener máquinas', detalle: error.message });
+        // Respuesta estandarizada según el contrato de la API [9, 10]
+        res.status(500).json({ 
+            error: 'Internal Server Error', 
+            mensaje: 'Error al obtener el listado de máquinas',
+            detalle: error.message 
+        });
     }
 };
 
