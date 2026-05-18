@@ -25,3 +25,37 @@ app.listen(PORT, () => {
 
 // Exportar la app para pruebas futuras [5]
 module.exports = app;
+
+const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const app = express();
+
+// 1. Opciones de configuración para Swagger
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'SmartGym API',
+      version: '1.0.0',
+      description: 'Documentación de la API para el sistema SmartGym',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Servidor Local',
+      },
+    ],
+  },
+  // Ruta hacia donde estarán tus endpoints para que Swagger los lea (ej: en la carpeta routes)
+  apis: ['./src/routes/*.js', './src/app.js'], 
+};
+
+// 2. Inicializar swagger-jsdoc
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
+// 3. Crear la ruta para la interfaz gráfica de Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// ... El resto de tus rutas y tu app.listen() que ya tienes configurado

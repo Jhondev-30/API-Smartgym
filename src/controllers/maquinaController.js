@@ -2,22 +2,22 @@ const { Pool } = require('pg');
 
 console.log('DB PARAMS:', {
     connectionString: process.env.DATABASE_URL,
-    host: process.env.PGHOST,
-    port: process.env.PGPORT,
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE,
-    ssl: process.env.PGSSL
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: process.env.DB_SSL
 });
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL || undefined,
-    host: process.env.PGHOST || 'localhost',
-    port: parseInt(process.env.PGPORT || '5432', 10),
-    user: process.env.PGUSER || 'postgres',
-    password: process.env.PGPASSWORD || 'postgres',
-    database: process.env.PGDATABASE || 'smartgym_db',
-    ssl: process.env.PGSSL === 'true' ? { rejectUnauthorized: false } : false,
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
+    database: process.env.DB_NAME || 'smartgym_db',
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
 const getMaquinas = async (req, res) => {

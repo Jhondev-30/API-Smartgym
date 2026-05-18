@@ -122,10 +122,10 @@ CREATE TABLE Sesiones (
 
 CREATE TABLE Reservas (
     ID_reserva  SERIAL  PRIMARY KEY,
-    ID_Client   INT     NOT NULL,
+    ID_client   INT     NOT NULL,
     ID_sesion   INT     NOT NULL,
     Fecha       DATE    NOT NULL,
-    CONSTRAINT fk_reserva_cliente FOREIGN KEY (ID_Client) REFERENCES Clientes(ID_client),
+    CONSTRAINT fk_reserva_cliente FOREIGN KEY (ID_client) REFERENCES Clientes(ID_client),
     CONSTRAINT fk_reserva_sesion  FOREIGN KEY (ID_sesion) REFERENCES Sesiones(ID_sesion)
 );
 
@@ -141,7 +141,7 @@ CREATE TABLE suscripcion (
 );
 
 CREATE TABLE Membresias (
-    ID_mebresia     SERIAL          PRIMARY KEY,
+    ID_membresia    SERIAL          PRIMARY KEY,
     ID_client       INT             NOT NULL,
     ID_suscripcion  INT             NOT NULL,
     Fecha_inicio    DATE            NOT NULL,
@@ -161,7 +161,7 @@ CREATE TABLE Pagos (
     Monto           NUMERIC(10,2)   NOT NULL,
     Fecha           DATE            NOT NULL,
     Metodo_pago     VARCHAR(50),
-    CONSTRAINT fk_pago_membresia FOREIGN KEY (ID_membresia) REFERENCES Membresias(ID_mebresia)
+    CONSTRAINT fk_pago_membresia FOREIGN KEY (ID_membresia) REFERENCES Membresias(ID_membresia)
 );
 
 -- ============================================================
@@ -199,7 +199,7 @@ CREATE TABLE VentasTienda (
 );
 
 CREATE TABLE DetalleVenta (
-    ID_detalle      int          PRIMARY KEY,
+    ID_detalle      SERIAL          PRIMARY KEY,
     ID_venta        INT             NOT NULL,
     ID_producto     INT             NOT NULL,
     Cantidad        INT             NOT NULL,

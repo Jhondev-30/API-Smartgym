@@ -6,36 +6,39 @@
 -- ============================================================
 -- 1. ROLES
 -- ============================================================
-INSERT INTO Role (id, Nombre, Descripcion) VALUES
+INSERT INTO Role (id_rol, Nombre, Descripcion) VALUES
 (1, 'Administrador', 'Acceso total al sistema'),
-(2, 'Entrenador',    'Gestión de sesiones y clientes'),
-(3, 'Cliente',       'Acceso a reservas y membresías');
+(2, 'Finanzas',      'Gestión de pagos y membresías'),
+(3, 'Entrenador',    'Gestión de sesiones y clientes'),
+(4, 'Cliente',       'Acceso a reservas y membresías');
 -- ============================================================
 -- 2. USUARIOS
 -- ============================================================
 INSERT INTO Usuario (password_hash, email, id_rol, activo) VALUES
 ('$2b$10$hash_admin_001',       'admin@gimnasio.com',      1, TRUE),
-('$2b$10$hash_entrenador_001',  'carlos.ruiz@gimnasio.com',2, TRUE),
-('$2b$10$hash_entrenador_002',  'laura.vega@gimnasio.com', 2, TRUE),
-('$2b$10$hash_cliente_001',     'juan.perez@gmail.com',    3, TRUE),
-('$2b$10$hash_cliente_002',     'maria.lopez@gmail.com',   3, TRUE),
-('$2b$10$hash_cliente_003',     'pedro.gomez@gmail.com',   3, TRUE),
-('$2b$10$hash_cliente_004',     'ana.torres@gmail.com',    3, TRUE);
+('$2b$10$hash_finance_001',     'finanzas@gimnasio.com',   2, TRUE),
+('$2b$10$hash_entrenador_001',  'carlos.ruiz@gimnasio.com',3, TRUE),
+('$2b$10$hash_entrenador_002',  'laura.vega@gimnasio.com', 3, TRUE),
+('$2b$10$hash_cliente_001',     'juan.perez@gmail.com',    4, TRUE),
+('$2b$10$hash_cliente_002',     'maria.lopez@gmail.com',   4, TRUE),
+('$2b$10$hash_cliente_003',     'pedro.gomez@gmail.com',   4, TRUE),
+('$2b$10$hash_cliente_004',     'ana.torres@gmail.com',    4, TRUE);
 
 -- ============================================================
 -- 3. ENTRENADORES
 -- ============================================================
 INSERT INTO Entrenadores (ID_user, Nombre, Apellido, Disciplina, Salario, Horario) VALUES
-(3, 'Laura',   'Vega',  'Yoga',        1600.00, 'Lunes a Sábado 08:00-16:00');
+(3, 'Carlos',  'Ruiz',  'Crossfit',     1800.00, 'Lunes a Sábado 06:00-14:00'),
+(4, 'Laura',   'Vega',  'Yoga',         1600.00, 'Lunes a Sábado 08:00-16:00');
 
 -- ============================================================
 -- 4. CLIENTES
 -- ============================================================
 INSERT INTO Clientes (ID_user, Nombre, Apellido, Telefono) VALUES
-(4, 'Juan',  'Pérez',  '555-1001'),
-(5, 'María', 'López',  '555-1002'),
-(6, 'Pedro', 'Gómez',  '555-1003'),
-(7, 'Ana',   'Torres', '555-1004');
+(5, 'Juan',  'Pérez',  '555-1001'),
+(6, 'María', 'López',  '555-1002'),
+(7, 'Pedro', 'Gómez',  '555-1003'),
+(8, 'Ana',   'Torres', '555-1004');
 
 -- ============================================================
 -- 5. EVALUACIONES BIOMÉTRICAS
