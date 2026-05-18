@@ -6,10 +6,10 @@
 -- ============================================================
 -- 1. ROLES
 -- ============================================================
-INSERT INTO Role (Nombre, Descripcion) VALUES
-('Administrador', 'Acceso total al sistema'),
-('Entrenador',    'Gestión de sesiones y clientes'),
-('Cliente',       'Acceso a reservas y membresías');
+INSERT INTO Role (id, Nombre, Descripcion) VALUES
+(1, 'Administrador', 'Acceso total al sistema'),
+(2, 'Entrenador',    'Gestión de sesiones y clientes'),
+(3, 'Cliente',       'Acceso a reservas y membresías');
 -- ============================================================
 -- 2. USUARIOS
 -- ============================================================
@@ -26,7 +26,6 @@ INSERT INTO Usuario (password_hash, email, id_rol, activo) VALUES
 -- 3. ENTRENADORES
 -- ============================================================
 INSERT INTO Entrenadores (ID_user, Nombre, Apellido, Disciplina, Salario, Horario) VALUES
-(2, 'Carlos',  'Ruiz',  'Musculación', 1800.00, 'Lunes a Viernes 06:00-14:00'),
 (3, 'Laura',   'Vega',  'Yoga',        1600.00, 'Lunes a Sábado 08:00-16:00');
 
 -- ============================================================

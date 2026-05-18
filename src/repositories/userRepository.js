@@ -1,49 +1,42 @@
-// // En un paso futuro configuraremos la conexión global (pool) a la DB
-// // Por ahora, definimos la estructura de la consulta SQL
-// const db = require('../config/db'); // Suponiendo que aquí estará tu conexión a Postgres
+const { Pool } = require('pg');
 
-// const findByEmail = async (email) => {
-//     try {
-//         // Consulta SQL directa a la tabla 'Usuario' definida en tu MER
-//         const query = 'SELECT id_user, password_hash, email, id_rol, activo FROM "Usuario" WHERE email = $1';
-//         const result = await db.query(query, [email]);
-
-//         // Retornamos el primer usuario encontrado o null si no existe
-//         return result.rows || null;
-//     } catch (error) {
-//         console.error('Error en userRepository.findByEmail:', error);
-//         throw new Error('Error al consultar la base de datos');
-//     }
-// };
-
-// module.exports = {
-//     findByEmail
-// };
-// MIENTRAS JHON SE DIGNA EN PASARME LA BENDITA BASE DE DATOS 
-
-
-
+// Configuración del Pool de conexiones
+// Se priorizan las variables de entorno para cumplir con el despliegue en Docker [1, 4]
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || undefined,
+    host: process.env.PGHOST || 'localhost',
+    port: parseInt(process.env.PGPORT || '5432', 10),
+    user: process.env.PGUSER || 'postgres',
+    password: process.env.PGPASSWORD || 'postgres',
+    database: process.env.PGDATABASE || 'smartgym_db',
+    // SSL para entornos de producción (opcional)
+    ssl: process.env.PGSSL === 'true' ? { rejectUnauthorized: false } : false,
+});
 
 /**
- * Datos de prueba (usuario simulado)
- * Uso: pruebas locales y desarrollo. NO usar en producción.
- * Reemplazar por la consulta real a la base de datos cuando esté disponible.
+ * Busca un usuario por su email para el Sistema de Identidad y Seguridad [5].
+ * @param {string} email - Correo proporcionado en el login.
+ * @returns {Object|null} - Retorna el objeto del usuario o null si no existe.
  */
-const usuarioSimulado = {
-    id_user: 1, // Identificador único (id_user) según la tabla Usuario
-    email: "admin@smartgym.com", // Correo del usuario de prueba
-    // Hash bcrypt para la contraseña 'admin123' (generado con bcryptjs, 10 salt rounds)
-    // Si cambias la contraseña, regenera el hash con: bcrypt.hash('nueva', 10)
-    password_hash: "$2b$10$fBXTziGAH49qGAqe/F9MeeLNQHTMx0e.QQqgQJblSsOJ8Z7ut9rNi",
-    id_rol: 1, // id_rol = 1 => Admin (según el MER del proyecto)
-    activo: true // Flag que indica si el usuario está activo (true = puede iniciar sesión)
-};
-
 const findByEmail = async (email) => {
-    if (email === usuarioSimulado.email) {
-        return usuarioSimulado;
+    try {
+        // 1. Consulta SQL usando los nombres exactos del MER: id_user, password_hash, id_rol, activo [3, 6].
+        // 2. Se mantienen las comillas en "Usuario" por la U mayúscula definida en el diseño [2, 3].
+        const query = 'SELECT id_user, password_hash, email, id_rol, activo FROM usuario WHERE email = $1';
+        
+        // 3. SE ARREGLA LO MALO: Se pasa [email] como arreglo para que el driver asigne el valor a $1.
+        // Esto garantiza la SANITIZACIÓN contra inyección SQL requerida por el profesor [1].
+        const { rows } = await pool.query(query, [email]);
+
+        // 4. Retornamos solo la primera fila (el objeto usuario) para facilitar la lógica del controlador.
+        return rows || null;
+    } catch (error) {
+        // Registro del error en consola para depuración técnica.
+        console.error('Error crítico en userRepository.findByEmail:', error.message);
+        
+        // Lanzamos un error genérico para que el controlador lo maneje con un código 500 [7].
+        throw new Error('Error al consultar la base de datos');
     }
-    return null;
 };
 
 module.exports = { findByEmail };
