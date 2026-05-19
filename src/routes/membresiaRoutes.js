@@ -63,4 +63,32 @@ router.post('/pagos', verifyToken, authorize([1]), membresiaController.createPag
  */
 router.get('/pagos/:id_pago', verifyToken, authorize([1]), membresiaController.getPagoById);
 
+/**
+ * @swagger
+ * /membresias/deactivate-expired:
+ *   post:
+ *     summary: Inactivar membresías expiradas (Solo Admin)
+ *     tags: [Membresías]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Membresías inactivadas
+ */
+router.post('/membresias/deactivate-expired', verifyToken, authorize([1]), membresiaController.deactivateExpired);
+
+/**
+ * @swagger
+ * /membresias/clients/no-activos:
+ *   get:
+ *     summary: Listar clientes sin membresía activa (Solo Admin)
+ *     tags: [Membresías]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de clientes sin membresía activa
+ */
+router.get('/membresias/clients/no-activos', verifyToken, authorize([1]), membresiaController.listClientsNoActive);
+
 module.exports = router;

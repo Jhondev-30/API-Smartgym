@@ -114,9 +114,43 @@ const getMembresiasByCliente = async (req, res) => {
     }
 };
 
+const deactivateExpired = async (req, res) => {
+    try {
+        const updated = await membresiaRepository.deactivateExpiredMemberships();
+        return res.status(200).json({
+            message: 'Membresías expiradas inactivadas',
+            count: updated.length,
+            updated
+        });
+    } catch (error) {
+        console.error('Error en membresiaController.deactivateExpired:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al inactivar membresías vencidas',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+const listClientsNoActive = async (req, res) => {
+    try {
+        const clients = await membresiaRepository.listClientsWithoutActiveMembership();
+        return res.status(200).json(clients);
+    } catch (error) {
+        console.error('Error en membresiaController.listClientsNoActive:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al listar clientes sin membresía activa',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
 module.exports = {
     getSuscripciones,
     createPago,
     getPagoById,
-    getMembresiasByCliente
+    getMembresiasByCliente,
+    deactivateExpired,
+    listClientsNoActive
 };

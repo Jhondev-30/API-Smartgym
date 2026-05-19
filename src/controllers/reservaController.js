@@ -110,3 +110,76 @@ const createReserva = async (req, res) => {
 };
 
 module.exports = { createReserva };
+
+const deleteReserva = async (req, res) => {
+    try {
+        const { id_reserva } = req.params;
+        const deleted = await sesionRepository.deleteReserva(id_reserva);
+        if (!deleted) {
+            return res.status(404).json({
+                error: 'Not Found',
+                codigoInterno: 'ERR_RESERVA_NO_ENCONTRADA',
+                mensaje: 'No se encontró la reserva especificada',
+                timestamp: new Date().toISOString()
+            });
+        }
+        return res.status(200).json({ message: 'Reserva eliminada', deleted });
+    } catch (error) {
+        console.error('Error en reservaController.deleteReserva:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al eliminar la reserva',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+const updateReserva = async (req, res) => {
+    try {
+        const { id_reserva } = req.params;
+        const { estado } = req.body; // expected 'Activa' or 'Inactiva' or similar
+
+        if (!estado) {
+            return res.status(400).json({
+                error: 'Bad Request',
+                mensaje: 'Se requiere el nuevo estado de la reserva',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        const reserva = await sesionRepository.findReservaById(id_reserva);
+        if (!reserva) {
+            return res.status(404).json({
+                error: 'Not Found',
+                codigoInterno: 'ERR_RESERVA_NO_ENCONTRADA',
+                mensaje: 'No se encontró la reserva especificada',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        // If user is client (role 3), ensure they own the reservation
+        if (req.user.role === 3) {
+            const cliente = await clienteRepository.findClientById(reserva.id_client);
+            if (!cliente || cliente.id_user !== req.user.id) {
+                return res.status(403).json({
+                    error: 'Forbidden',
+                    codigoInterno: 'ERR_PERMISO_INSUFICIENTE',
+                    mensaje: 'No puedes modificar la reserva de otro cliente',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+
+        const updated = await sesionRepository.updateReservaEstado(id_reserva, estado);
+        return res.status(200).json(updated);
+    } catch (error) {
+        console.error('Error en reservaController.updateReserva:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al actualizar la reserva',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+module.exports = { createReserva, deleteReserva, updateReserva };

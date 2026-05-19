@@ -140,6 +140,64 @@ const createEntrenador = async ({ email, password_hash, nombre, apellido, discip
     }
 };
 
+const updateClient = async (id_client, { nombre, apellido, telefono }) => {
+    try {
+        const query = `
+            UPDATE clientes
+            SET nombre = COALESCE($2, nombre),
+                apellido = COALESCE($3, apellido),
+                telefono = COALESCE($4, telefono)
+            WHERE id_client = $1
+            RETURNING id_client, id_user, nombre, apellido, telefono`;
+        const result = await pool.query(query, [id_client, nombre, apellido, telefono]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en clienteRepository.updateClient:', error.message);
+        throw error;
+    }
+};
+
+const updateEntrenador = async (id_entrenador, { nombre, apellido, disciplina, salario, horario }) => {
+    try {
+        const query = `
+            UPDATE entrenadores
+            SET nombre = COALESCE($2, nombre),
+                apellido = COALESCE($3, apellido),
+                disciplina = COALESCE($4, disciplina),
+                salario = COALESCE($5, salario),
+                horario = COALESCE($6, horario)
+            WHERE id_entrenador = $1
+            RETURNING id_entrenador, id_user, nombre, apellido, disciplina, salario, horario`;
+        const result = await pool.query(query, [id_entrenador, nombre, apellido, disciplina, salario, horario]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en clienteRepository.updateEntrenador:', error.message);
+        throw error;
+    }
+};
+
+const findEntrenadorById = async (id_entrenador) => {
+    try {
+        const query = 'SELECT id_entrenador, id_user, nombre, apellido, disciplina, salario, horario FROM entrenadores WHERE id_entrenador = $1';
+        const result = await pool.query(query, [id_entrenador]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en clienteRepository.findEntrenadorById:', error.message);
+        throw error;
+    }
+};
+
+const deleteEntrenador = async (id_entrenador) => {
+    try {
+        const query = 'DELETE FROM entrenadores WHERE id_entrenador = $1 RETURNING *';
+        const result = await pool.query(query, [id_entrenador]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en clienteRepository.deleteEntrenador:', error.message);
+        throw error;
+    }
+};
+
 module.exports = {
     findClientById,
     listClientes,
@@ -148,5 +206,9 @@ module.exports = {
     findEvaluacionesByClient,
     createEvaluacion,
     createClient,
-    createEntrenador
+    createEntrenador,
+    updateClient,
+    updateEntrenador,
+    findEntrenadorById,
+    deleteEntrenador
 };

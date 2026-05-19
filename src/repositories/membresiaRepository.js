@@ -129,6 +129,69 @@ const createMembresia = async (id_client, id_suscripcion, fecha_inicio, fecha_fi
     }
 };
 
+const deactivateExpiredMemberships = async () => {
+    try {
+        const query = `
+            UPDATE membresias
+            SET estado = 'Inactiva'
+            WHERE estado = 'Activa'
+              AND fecha_fin < CURRENT_DATE
+            RETURNING *`;
+        const result = await pool.query(query);
+        return result.rows;
+    } catch (error) {
+        console.error('Error en membresiaRepository.deactivateExpiredMemberships:', error.message);
+        throw error;
+    }
+};
+
+const listClientsWithoutActiveMembership = async () => {
+    try {
+        const query = `
+            SELECT c.id_client, c.id_user, c.nombre, c.apellido, c.telefono
+            FROM clientes c
+            WHERE NOT EXISTS (
+                SELECT 1 FROM membresias m
+                WHERE m.id_client = c.id_client
+                  AND m.estado = 'Activa'
+                  AND m.fecha_inicio <= CURRENT_DATE
+                  AND m.fecha_fin >= CURRENT_DATE
+            )
+            ORDER BY c.id_client`;
+        const result = await pool.query(query);
+        return result.rows;
+    } catch (error) {
+        console.error('Error en membresiaRepository.listClientsWithoutActiveMembership:', error.message);
+        throw error;
+    }
+};
+
+const deleteMembresia = async (id_membresia) => {
+    try {
+        const query = 'DELETE FROM membresias WHERE id_mebresia = $1 RETURNING *';
+        const result = await pool.query(query, [id_membresia]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en membresiaRepository.deleteMembresia:', error.message);
+        throw error;
+    }
+};
+
+const updateMembresiaEstado = async (id_membresia, estado) => {
+    try {
+        const query = `
+            UPDATE membresias
+            SET estado = $2
+            WHERE id_mebresia = $1
+            RETURNING *`;
+        const result = await pool.query(query, [id_membresia, estado]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en membresiaRepository.updateMembresiaEstado:', error.message);
+        throw error;
+    }
+};
+
 module.exports = {
     listSuscripciones,
     findMembresiaById,
@@ -136,5 +199,9 @@ module.exports = {
     findPagoById,
     listMembresiasByClient,
     findActiveMembershipWithPayment,
-    createMembresia
+    createMembresia,
+    deactivateExpiredMemberships,
+    listClientsWithoutActiveMembership,
+    deleteMembresia,
+    updateMembresiaEstado
 };

@@ -272,6 +272,67 @@ const createMembresia = async (req, res) => {
     }
 };
 
+
+
+const updateCliente = async (req, res) => {
+    try {
+        const { id_cliente } = req.params;
+        const { nombre, apellido, telefono } = req.body;
+
+        const cliente = await clienteRepository.findClientById(id_cliente);
+        if (!cliente) {
+            return res.status(404).json({
+                error: 'Not Found',
+                codigoInterno: 'ERR_CLIENTE_NO_ENCONTRADO',
+                mensaje: 'No se encontró el cliente especificado',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        const updated = await clienteRepository.updateClient(id_cliente, { nombre, apellido, telefono });
+        return res.status(200).json(updated);
+    } catch (error) {
+        console.error('Error en clienteController.updateCliente:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al actualizar el cliente',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+const updateEntrenador = async (req, res) => {
+    try {
+        const { id_entrenador } = req.params;
+        const { nombre, apellido, disciplina, salario, horario } = req.body;
+
+        const entrenador = await clienteRepository.findEntrenadorByUserId(id_entrenador);
+        // findEntrenadorByUserId expects user id — allow passing entrenador id: try findEntrenadorById fallback
+        // For simplicity, we'll attempt to find by entrenador id via repository query
+        const entrenadorRecord = await clienteRepository.findEntrenadorByUserId(req.user.id) || null;
+
+        // If the entrenador doesn't exist, proceed to update by id
+        const updated = await clienteRepository.updateEntrenador(id_entrenador, { nombre, apellido, disciplina, salario, horario });
+        if (!updated) {
+            return res.status(404).json({
+                error: 'Not Found',
+                codigoInterno: 'ERR_ENTRENADOR_NO_ENCONTRADO',
+                mensaje: 'No se encontró el entrenador especificado',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        return res.status(200).json(updated);
+    } catch (error) {
+        console.error('Error en clienteController.updateEntrenador:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al actualizar el entrenador',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
 module.exports = {
     getClientes,
     createCliente,
@@ -279,5 +340,7 @@ module.exports = {
     createEvaluacion,
     getEvaluaciones,
     getMembresias,
-    createMembresia
+    createMembresia,
+    updateCliente,
+    updateEntrenador
 };

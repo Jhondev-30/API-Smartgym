@@ -144,6 +144,17 @@ const listVentasHistory = async () => {
     }
 };
 
+const deleteProducto = async (id_producto) => {
+    try {
+        const query = 'DELETE FROM productostienda WHERE id_producto = $1 RETURNING *';
+        const result = await pool.query(query, [id_producto]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en tiendaRepository.deleteProducto:', error.message);
+        throw error;
+    }
+};
+
 module.exports = {
     listProductos,
     findProductoById,
@@ -155,4 +166,5 @@ module.exports = {
     decrementProductoStock,
     findProductoByIdForUpdate,
     listVentasHistory
+    ,deleteProducto
 };

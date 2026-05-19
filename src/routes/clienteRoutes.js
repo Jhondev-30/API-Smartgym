@@ -127,6 +127,76 @@ router.post('/:id_cliente/evaluaciones', verifyToken, authorize([2]), clienteCon
 
 /**
  * @swagger
+ * /clientes/{id_cliente}:
+ *   patch:
+ *     summary: Actualizar datos de un cliente (Solo Admin)
+ *     tags: [Clientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id_cliente
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               apellido:
+ *                 type: string
+ *               telefono:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Cliente actualizado
+ */
+router.patch('/:id_cliente', verifyToken, authorize([1]), clienteController.updateCliente);
+
+/**
+ * @swagger
+ * /clientes/entrenadores/{id_entrenador}:
+ *   patch:
+ *     summary: Actualizar datos de un entrenador (Solo Admin)
+ *     tags: [Entrenadores]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id_entrenador
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               apellido:
+ *                 type: string
+ *               disciplina:
+ *                 type: string
+ *               salario:
+ *                 type: number
+ *               horario:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Entrenador actualizado
+ */
+router.patch('/entrenadores/:id_entrenador', verifyToken, authorize([1]), clienteController.updateEntrenador);
+
+/**
+ * @swagger
  * /clientes/{id_cliente}/evaluaciones:
  *   get:
  *     summary: Obtener evaluaciones de un cliente

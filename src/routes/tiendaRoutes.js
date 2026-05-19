@@ -127,4 +127,24 @@ router.post('/ventas', verifyToken, authorize([1,3]), tiendaController.createVen
  */
 router.get('/ventas', verifyToken, authorize([1]), tiendaController.getVentas);
 
+/**
+ * @swagger
+ * /productos/{id_producto}:
+ *   delete:
+ *     summary: Eliminar un producto (Solo Admin)
+ *     tags: [Tienda]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id_producto
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Producto eliminado
+ */
+router.delete('/productos/:id_producto', verifyToken, authorize([1]), tiendaController.deleteProducto);
+
 module.exports = router;

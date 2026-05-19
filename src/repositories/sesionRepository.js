@@ -201,6 +201,43 @@ const createReserva = async (id_client, id_sesion, fecha) => {
     }
 };
 
+const deleteReserva = async (id_reserva) => {
+    try {
+        const query = 'DELETE FROM reservas WHERE id_reserva = $1 RETURNING *';
+        const result = await pool.query(query, [id_reserva]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en sesionRepository.deleteReserva:', error.message);
+        throw error;
+    }
+};
+
+const findReservaById = async (id_reserva) => {
+    try {
+        const query = 'SELECT id_reserva, id_client, id_sesion, fecha, estado FROM reservas WHERE id_reserva = $1';
+        const result = await pool.query(query, [id_reserva]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en sesionRepository.findReservaById:', error.message);
+        throw error;
+    }
+};
+
+const updateReservaEstado = async (id_reserva, estado) => {
+    try {
+        const query = `
+            UPDATE reservas
+            SET estado = $2
+            WHERE id_reserva = $1
+            RETURNING id_reserva, id_client, id_sesion, fecha, estado`;
+        const result = await pool.query(query, [id_reserva, estado]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error en sesionRepository.updateReservaEstado:', error.message);
+        throw error;
+    }
+};
+
 const deleteSesion = async (id_sesion) => {
     const client = await pool.connect();
     try {
@@ -231,5 +268,9 @@ module.exports = {
     findReservaByClientSessionDate,
     findClientReservationOverlap,
     createReserva,
+    createReserva,
+    deleteReserva,
+    findReservaById,
+    updateReservaEstado,
     deleteSesion
 };

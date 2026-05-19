@@ -229,10 +229,36 @@ const getVentas = async (req, res) => {
     }
 };
 
+const deleteProducto = async (req, res) => {
+    try {
+        const { id_producto } = req.params;
+        const producto = await tiendaRepository.findProductoById(id_producto);
+        if (!producto) {
+            return res.status(404).json({
+                error: 'Not Found',
+                codigoInterno: 'ERR_PRODUCTO_NO_ENCONTRADO',
+                mensaje: 'No se encontró el producto especificado',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        const deleted = await tiendaRepository.deleteProducto(id_producto);
+        return res.status(200).json({ message: 'Producto eliminado', deleted });
+    } catch (error) {
+        console.error('Error en tiendaController.deleteProducto:', error.message);
+        return res.status(500).json({
+            error: 'Internal Server Error',
+            mensaje: 'Error al eliminar el producto',
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
 module.exports = {
     getProductos,
     updateProductoStock,
     createProducto,
     createVenta,
-    getVentas
+    getVentas,
+    deleteProducto
 };
