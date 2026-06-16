@@ -9,8 +9,8 @@ set -e
 if [ ! -f .env ]; then
     echo "📝 Generando archivo .env automáticamente..."
     
-    # Generar JWT_SECRET seguro
-    JWT_SECRET=$(openssl rand -base64 32)
+    # Generar JWT_SECRET seguro (compatible con alpine/busybox, sin openssl)
+    JWT_SECRET=$(head -c 32 /dev/urandom | base64)
     
     cat > .env << 'EOF'
 # SmartGym - Variables de entorno (auto-generadas)
